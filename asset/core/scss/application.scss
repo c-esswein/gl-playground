@@ -1,0 +1,13 @@
+
+@import "compass/reset";
+@import "compass/css3";
+
+body {
+    font-family: Open Sans;
+    font-weight: 400;
+}
+
+
+#render-canvas {
+    position: absolute;
+}

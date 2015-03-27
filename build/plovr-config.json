@@ -1,0 +1,30 @@
+{
+  "id": "gl-playgound",
+  "paths": [
+    "../asset/core/js/",
+    "../asset/closure-library/third_party/",
+    "../asset/third-party/"
+  ],
+  "mode": "ADVANCED",
+  "level": "VERBOSE",
+  "externs": [
+    "../asset/third-party/modernizr-externs.js"
+  ],
+
+  "define": {
+    "goog.DEBUG": false
+  },
+
+  "output-charset": "UTF-8",
+
+  "closure-library": "../asset/closure-library/closure/goog/",
+
+  "modules": {
+    "app": {
+      "inputs": "../asset/core/js/App.js",
+      "deps": []
+    }
+  },
+
+  "module-output-path": "../asset/core/js-min/%s.js"
+}
