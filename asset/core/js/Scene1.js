@@ -1,18 +1,13 @@
 goog.provide('gl.Scene1');
 
-var maxParticleCount = 1000;
-var particleCount = 500;
-var r = 1200;
-var rHalf = r / 2;
-var minDistance = 150;
 
 
 gl.Scene1 = function()
 {
-    this.camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 4000 );
-    this.camera.position.z = 1750;
-    gl.App.getInstance().camera = this.camera;
-
+    var maxParticleCount = 1000;
+    this.particleCount = 500;
+    var r = window.innerWidth;
+    this.r = r;
 
     this.scene = new THREE.Scene();
 
@@ -44,8 +39,7 @@ gl.Scene1 = function()
     this.particlesData = [];
 
 
-    for ( var i = 0; i < maxParticleCount; i++ ) {
-
+    for (var i = 0; i < maxParticleCount; i++ ) {
         var x = Math.random() * r - r / 2;
         var y = Math.random() * r - r / 2;
         var z = Math.random() * r - r / 2;
@@ -64,53 +58,52 @@ gl.Scene1 = function()
 
     this.particles.drawcalls.push( {
         start: 0,
-        count: particleCount,
+        count: this.particleCount,
         index: 0
     } );
 
-    this.particles.addAttribute( 'position', new THREE.DynamicBufferAttribute( this.particlePositions, 3 ) );
+    this.particles.addAttribute('position', new THREE.DynamicBufferAttribute( this.particlePositions, 3 ) );
 
     // create the particle system
     this.pointCloud = new THREE.PointCloud( this.particles, pMaterial );
     this.group.add( this.pointCloud );
 
     var geometry = new THREE.BufferGeometry();
-
-    geometry.addAttribute( 'position', new THREE.DynamicBufferAttribute( this.positions, 3 ) );
-    geometry.addAttribute( 'color', new THREE.DynamicBufferAttribute( this.colors, 3 ) );
-
+    geometry.addAttribute('position', new THREE.DynamicBufferAttribute(this.positions, 3 ) );
+    geometry.addAttribute('color', new THREE.DynamicBufferAttribute(this.colors, 3 ) );
     geometry.computeBoundingSphere();
-
-    geometry.drawcalls.push( {
+    geometry.drawcalls.push({
         start: 0,
         count: 0,
         index: 0
-    } );
+    });
 
-    var material = new THREE.LineBasicMaterial( {
+    var material = new THREE.LineBasicMaterial({
         vertexColors: THREE.VertexColors,
         blending: THREE.AdditiveBlending,
         transparent: true
-    } );
+    });
 
-    this.linesMesh = new THREE.Line( geometry, material, THREE.LinePieces );
-    this.group.add( this.linesMesh );
-
-
-    this.onRender();
+    this.linesMesh = new THREE.Line(geometry, material, THREE.LinePieces);
+    this.group.add(this.linesMesh);
 };
 
 
-gl.Scene1.prototype.onRender = function()
+gl.Scene1.prototype.onAnimate = function()
 {
     var vertexpos = 0;
     var colorpos = 0;
     var numConnected = 0;
 
-    for ( var i = 0; i < particleCount; i++ )
-        this.particlesData[ i ].numConnections = 0;
 
-    for ( var i = 0; i < particleCount; i++ ) {
+    var rHalf = this.r / 2;
+    var minDistance = 300;
+
+    for ( var i = 0; i < this.particleCount; i++ ) {
+        this.particlesData[ i ].numConnections = 0;
+    }
+
+    for ( var i = 0; i < this.particleCount; i++ ) {
 
         // get the particle
         var particleData = this.particlesData[i];
@@ -132,7 +125,7 @@ gl.Scene1.prototype.onRender = function()
           //  continue;
 
         // Check collision
-        for ( var j = i + 1; j < particleCount; j++ ) {
+        for ( var j = i + 1; j < this.particleCount; j++ ) {
 
             var particleDataB = this.particlesData[ j ];
             //if ( effectController.limitConnections && particleDataB.numConnections >= effectController.maxConnections )
@@ -172,7 +165,7 @@ gl.Scene1.prototype.onRender = function()
     }
 
 
-    this.linesMesh.geometry.drawcalls[ 0 ].count = numConnected * 2;
+    this.linesMesh.geometry.drawcalls[0].count = numConnected * 2;
     this.linesMesh.geometry.attributes.position.needsUpdate = true;
     this.linesMesh.geometry.attributes.color.needsUpdate = true;
 
@@ -181,9 +174,4 @@ gl.Scene1.prototype.onRender = function()
 
     //var time = Date.now() * 0.001;
     //this.group.rotation.y = time * 0.1;
-    var app = gl.App.getInstance();
-    app.renderer.render(this.scene, this.camera);
-
-
-    requestAnimationFrame(goog.bind(this.onRender, this));
 };
