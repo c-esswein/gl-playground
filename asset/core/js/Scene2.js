@@ -116,18 +116,13 @@ gl.Scene2 = function()
          this.pyramidMesh = pyramidMesh;
          this.scene.add(pyramidMesh);
 
-    this.onRender();
 };
 
 
-gl.Scene2.prototype.onRender = function()
+gl.Scene2.prototype.onAnimate = function()
 {
-    requestAnimationFrame(goog.bind(this.onRender, this));
 
     this.cube.rotation.x += 0.01;
     this.cube.rotation.y += 0.01;
     this.pyramidMesh.rotateOnAxis(new THREE.Vector3(1, 1, 1).normalize(), 0.075);
-
-    var app = gl.App.getInstance();
-    app.renderer.render(this.scene, app.camera);
 };

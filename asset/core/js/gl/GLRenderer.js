@@ -20,6 +20,7 @@ gl.GLRenderer = function(el)
     this.renderer_.setSize(canvasWidth, canvasHeight);
     this.renderer_.gammaInput = true;
     this.renderer_.gammaOutput = true;
+
     var canvasEl = this.renderer_.domElement;
     canvasEl.id = 'render-canvas';
     el = el || document.body;
@@ -67,6 +68,15 @@ gl.GLRenderer.prototype.setScene = function(scene)
 {
     this.scene = scene;
     this.camera.lookAt(this.scene.position);
+};
+
+
+/**
+ * @return {THREE.Scene}
+ */
+gl.GLRenderer.prototype.getScene = function()
+{
+    return this.scene;
 };
 
 /**
